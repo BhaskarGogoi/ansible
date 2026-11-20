@@ -37,3 +37,7 @@ Install the required packages by running the following commands on your master E
     sudo apt install ansible
     sudo apt install python3-boto3
 ```
+### D. Run The Program
+```
+    python3 ansible_runner.py
+```
