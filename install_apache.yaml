@@ -1,0 +1,18 @@
+---
+- hosts: target_instances
+  remote_user: ubuntu
+  become: yes
+  become_user: root
+  become_method: sudo
+
+
+  tasks:
+    - name: Install apache2
+      ansible.builtin.apt:
+        name: apache2
+        state: latest
+        update_cache: yes
+
+  handlers:
+    - name: Start Apache2
+      action: ansible.builtin.service name=apache2 state=started

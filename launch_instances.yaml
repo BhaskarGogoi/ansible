@@ -1,0 +1,57 @@
+---
+- name: Launch EC2 Instances for Ansible Assignment
+  hosts: localhost
+  connection: local
+
+  vars:
+    region: ap-south-2
+    instance_type: t3.micro
+    key_name: ansible-key
+
+  tasks:
+    # Launch Group 1 Instances
+    - name: Launch Group 1 instances
+      amazon.aws.ec2_instance:
+        name: "Ansible-Group1-{{ item }}"
+        region: "{{ region }}"
+        key_name: "{{ key_name }}"
+        instance_type: "{{ instance_type }}"
+        image_id: "{{ ami_id }}"
+
+        # This tells the module to wait until the EC2 instance is fully running
+        wait: true
+
+        network:
+          assign_public_ip: true
+
+        tags:
+          AnsibleEC2Group: Group1
+          Name: "Ansible-Group1-{{ item }}"
+
+      loop: "{{ range(1, (group1_count | int) + 1) | list }}"
+
+    # Launch Group 2 Instances
+    - name: Launch Group 2 instances
+      amazon.aws.ec2_instance:
+        name: "Ansible-Group2-{{ item }}"
+        region: "{{ region }}"
+        key_name: "{{ key_name }}"
+        instance_type: "{{ instance_type }}"
+        image_id: "{{ ami_id }}"
+
+        wait: true
+
+        network:
+          assign_public_ip: true
+
+        tags:
+          AnsibleEC2Group: Group2
+          Name: "Ansible-Group2-{{ item }}"
+
+      loop: "{{ range(1, (group2_count | int) + 1) | list }}"
+
+    # Completion Message
+    - name: Display completion message
+      ansible.builtin.debug:
+        msg:
+          - "=== EC2 INSTANCES CREATED SUCCESSFULLY ==="
